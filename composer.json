@@ -1,0 +1,7 @@
+{
+    "name": "myapp",
+    "description": "A simple PHP application",
+    "require": {
+        "php": "^7.4 || ^8.0"
+    }
+}
