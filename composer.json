@@ -1,5 +1,5 @@
 {
-    "name": "myapp",
+    "name": "chrisreeves70/heroku",
     "description": "A simple PHP application",
     "require": {
         "php": "^7.4 || ^8.0"
