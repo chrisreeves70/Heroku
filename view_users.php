@@ -3,17 +3,19 @@
 include 'db_connection.php';
 
 // Create connection
-$conn = pg_connect("host=$host dbname=$dbname user=$user password=$password");
+$conn = new mysqli($host, $user, $password, $dbname, $port);
 
-if (!$conn) {
-    die("Connection failed: " . pg_last_error());
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
+// Query to fetch users
 $sql = "SELECT * FROM users";
-$result = pg_query($conn, $sql);
+$result = $conn->query($sql);
 
 if (!$result) {
-    die("Error in SQL query: " . pg_last_error());
+    die("Error in SQL query: " . $conn->error);
 }
 ?>
 
@@ -28,7 +30,7 @@ if (!$result) {
 <body>
     <div class="container">
         <h1 class="mt-5">User List</h1>
-        <?php if (pg_num_rows($result) > 0): ?>
+        <?php if ($result->num_rows > 0): ?>
             <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
@@ -39,7 +41,7 @@ if (!$result) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = pg_fetch_assoc($result)): ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($row["id"]); ?></td>
                             <td><?php echo htmlspecialchars($row["name"]); ?></td>
@@ -62,5 +64,5 @@ if (!$result) {
 
 <?php
 // Close the connection
-pg_close($conn);
+$conn->close();
 ?>
