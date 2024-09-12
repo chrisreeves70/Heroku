@@ -11,15 +11,14 @@ use Monolog\Handler\LogglyHandler;
 $logglyToken = '2c8f1f6e-b7d3-4682-9b36-8b90ab233298'; // Your Loggly token
 $logglyEndpoint = "https://logs-01.loggly.com/inputs/$logglyToken/tag/http/";
 
-// Log a test message
-$logger->info("This is a test log message.");
-
-
 // Create a Logger instance
 $logger = new Logger('db_connection_logger');
 
 // Add a Loggly handler
 $logger->pushHandler(new LogglyHandler($logglyEndpoint, Logger::DEBUG));
+
+// Log a test message
+$logger->info("This is a test log message.");
 
 // Define database URL
 $databaseUrl = "mysql://bf1b99b2168a1d:3cc7e973@us-cluster-east-01.k8s.cleardb.net/heroku_8e2d5898e64e59e?reconnect=true";
@@ -52,4 +51,3 @@ $logger->info("Connected successfully to MySQL database '$dbname'.");
 echo "Connected successfully";
 
 ?>
-
