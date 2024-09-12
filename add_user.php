@@ -1,56 +1,48 @@
 <?php
-// Debugging: Start of the script
-echo "Debug: add_user.php script started.<br>";
+// Database connection settings
+$databaseUrl = "mysql://bf1b99b2168a1d:3cc7e973@us-cluster-east-01.k8s.cleardb.net/heroku_8e2d5898e64e59e?reconnect=true";
 
-// Include the database connection
-include 'db_connection.php';
+// URL to extract connection information
+$components = parse_url($databaseUrl);
 
-// Check if the database connection is successful
-if ($conn === false) {
-    echo "Debug: Database connection failed: " . pg_last_error() . "<br>";
-    die("Database connection failed.");
-} else {
-    echo "Debug: Database connected successfully.<br>";
+// Extract connection details
+$host = $components['host'];
+$port = $components['port'] ?? 3306; // Default MySQL port is 3306
+$dbname = ltrim($components['path'], '/');
+$user = $components['user'];
+$password = $components['pass'];
+
+// Create connection
+$conn = new mysqli($host, $user, $password, $dbname, $port);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Error connecting to MySQL: " . $conn->connect_error);
 }
 
-// Debug: Check if POST data is set
+// Collect POST data
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    echo "Debug: POST request detected.<br>";
-    
-    // Debug: Print all POST data
-    echo "Debug: POST data: " . print_r($_POST, true) . "<br>";
-
-    // Sanitize inputs
-    $name = htmlspecialchars($_POST['name']);
-    $email = htmlspecialchars($_POST['email']);
-
-    // Debug: Print the sanitized inputs
-    echo "Debug: Name=$name, Email=$email<br>";
+    $name = $_POST['name'];
+    $email = $_POST['email'];
 
     // Prepare and bind
     $stmt = $conn->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
     if ($stmt === false) {
-        echo "Debug: Error preparing statement: " . pg_last_error() . "<br>";
-        die("Error preparing statement: " . pg_last_error());
+        die("Error preparing statement: " . $conn->error);
     }
 
     $stmt->bind_param("ss", $name, $email);
 
     // Execute the statement
     if ($stmt->execute()) {
-        echo "Debug: User added successfully: Name=$name, Email=$email<br>";
-        header("Location: view_users.php");
-        exit();
+        echo "User added successfully";
     } else {
-        echo "Debug: Error executing statement: " . pg_last_error() . "<br>";
+        die("Error executing statement: " . $stmt->error);
     }
 
     $stmt->close();
-} else {
-    echo "Debug: No POST request detected.<br>";
 }
 
-// Close database connection
 $conn->close();
 ?>
 
@@ -60,3 +52,4 @@ $conn->close();
     Email: <input type="email" name="email" required>
     <input type="submit" value="Add User">
 </form>
+
