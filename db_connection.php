@@ -7,20 +7,18 @@ $components = parse_url($databaseUrl);
 
 // Extract the connection details
 $host = $components['host'];
-$port = $components['port'] ?? 5432;
+$port = $components['port'] ?? 3306; // Default MySQL port is 3306
 $dbname = ltrim($components['path'], '/');
 $user = $components['user'];
 $password = $components['pass'];
 
-// Create the connection string
-$connectionString = "host=$host port=$port dbname=$dbname user=$user password=$password";
-
 // Create connection
-$conn = pg_connect($connectionString);
+$conn = new mysqli($host, $user, $password, $dbname, $port);
 
 // Check connection
-if ($conn === false) {
-    die("Error connecting to PostgreSQL: " . pg_last_error());
+if ($conn->connect_error) {
+    die("Error connecting to MySQL: " . $conn->connect_error);
 }
 echo "Connected successfully";
 ?>
+
