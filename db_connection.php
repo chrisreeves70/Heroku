@@ -1,54 +1,50 @@
 <?php
 
-// Define the log file path (make sure this directory is writable by the web server)
-$logFile = '/path/to/your/logs/db_connection.log';
+// Include Composer's autoloader
+require 'vendor/autoload.php';
 
-// Function to log messages with timestamps
-function logMessage($message) {
-    global $logFile;
-    $timestamp = date('Y-m-d H:i:s');
-    $formattedMessage = "[$timestamp] $message" . PHP_EOL;
-    error_log($formattedMessage, 3, $logFile);
-}
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\LogglyHandler;
 
-// Connection URL provided by ClearDB for the Heroku MySQL database
+// Define Loggly token and endpoint
+$logglyToken = 'YOUR_LOGGLY_TOKEN'; // Replace with your Loggly token
+$logglyEndpoint = "https://logs-01.loggly.com/inputs/$logglyToken/tag/http/";
+
+// Create a Logger instance
+$logger = new Logger('db_connection_logger');
+
+// Add a Loggly handler
+$logger->pushHandler(new LogglyHandler($logglyEndpoint, Logger::DEBUG));
+
+// Define database URL
 $databaseUrl = "mysql://bf1b99b2168a1d:3cc7e973@us-cluster-east-01.k8s.cleardb.net/heroku_8e2d5898e64e59e?reconnect=true";
 
-// Parse the database URL to extract connection details
+// URL to extract connection information
 $components = parse_url($databaseUrl);
 
-// Extract the host name from the URL
+// Extract connection details
 $host = $components['host'];
-
-// Extract the port number from the URL or use default MySQL port 3306 if not specified
-$port = $components['port'] ?? 3306;
-
-// Extract the database name from the URL, removing the leading '/'
+$port = $components['port'] ?? 3306; // Default MySQL port is 3306
 $dbname = ltrim($components['path'], '/');
-
-// Extract the user name from the URL
 $user = $components['user'];
-
-// Extract the password from the URL
 $password = $components['pass'];
 
-// Log the connection attempt
-logMessage("Attempting to connect to MySQL database '$dbname' at host '$host' on port '$port'.");
+// Log connection attempt
+$logger->info("Attempting to connect to MySQL database '$dbname' at host '$host' on port '$port'.");
 
-// Create a new MySQLi connection
+// Create MySQL connection
 $conn = new mysqli($host, $user, $password, $dbname, $port);
 
-// Check if the connection was successful
+// Check connection
 if ($conn->connect_error) {
-    // Log the error and stop execution
-    logMessage("Connection failed: " . $conn->connect_error);
+    $logger->error("Connection failed: " . $conn->connect_error);
     die("Error connecting to MySQL: " . $conn->connect_error);
 }
 
-// Log the success
-logMessage("Connected successfully to MySQL database '$dbname'.");
+// Log successful connection
+$logger->info("Connected successfully to MySQL database '$dbname'.");
 
-// Output a success message if connection is established
 echo "Connected successfully";
 
 ?>
