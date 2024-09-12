@@ -3,8 +3,8 @@
 include 'db_connection.php';
 
 // Check if the connection is established
-if ($conn === false) {
-    die("Connection failed: " . print_r(sqlsrv_errors(), true));
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
 // Handle deletion
@@ -12,19 +12,25 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
     
     // Prepare the SQL statement with a parameter
-    $sql = "DELETE FROM Users WHERE id = ?";
+    $sql = "DELETE FROM users WHERE id = ?";
     
-    // Execute the query
-    $stmt = sqlsrv_query($conn, $sql, array($id));
+    // Prepare and execute the statement
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
     
-    if ($stmt === false) {
-        die("Error deleting record: " . print_r(sqlsrv_errors(), true));
-    } else {
+    if ($stmt->execute()) {
         echo "<p>User deleted successfully.</p>";
+    } else {
+        die("Error deleting record: " . $stmt->error);
     }
+    
+    $stmt->close();
 } else {
     echo "<p>No user ID provided for deletion.</p>";
 }
+
+// Close the connection
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -43,8 +49,3 @@ if (isset($_GET['id'])) {
     </div>
 </body>
 </html>
-
-<?php
-// Close the connection
-sqlsrv_close($conn);
-?>
