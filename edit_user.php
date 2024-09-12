@@ -1,32 +1,47 @@
 <?php
-
+// Include database connection file
 include 'db_connection.php';
 
+// Check if the connection is established
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST['id'];
     $name = $_POST['name'];
     $email = $_POST['email'];
     
-    $sql = "UPDATE Users SET name = $1, email = $2 WHERE id = $3";
-    $result = pg_query_params($conn, $sql, array($name, $email, $id));
+    // Prepare the SQL statement with parameters
+    $sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssi", $name, $email, $id);
     
-    if (!$result) {
-        die("Error updating record: " . pg_last_error());
-    } else {
+    if ($stmt->execute()) {
         echo "<p>User updated successfully.</p>";
+    } else {
+        die("Error updating record: " . $stmt->error);
     }
+    
+    $stmt->close();
 }
 
 // Fetch user details
 $id = $_GET['id'];
-$sql = "SELECT * FROM Users WHERE id = $1";
-$result = pg_query_params($conn, $sql, array($id));
-$user = pg_fetch_assoc($result);
+$sql = "SELECT * FROM users WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if ($user === false) {
-    die("User not found: " . pg_last_error());
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+} else {
+    die("User not found.");
 }
+
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -59,5 +74,5 @@ if ($user === false) {
 
 <?php
 // Close the connection
-pg_close($conn);
+$conn->close();
 ?>
