@@ -8,7 +8,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\LogglyHandler;
 
 // Define Loggly token and endpoint
-$logglyToken = 'YOUR_LOGGLY_TOKEN'; // Replace with your Loggly token
+$logglyToken = '2c8f1f6e-b7d3-4682-9b36-8b90ab233298'; // Your Loggly token
 $logglyEndpoint = "https://logs-01.loggly.com/inputs/$logglyToken/tag/http/";
 
 // Create a Logger instance
@@ -48,3 +48,4 @@ $logger->info("Connected successfully to MySQL database '$dbname'.");
 echo "Connected successfully";
 
 ?>
+
