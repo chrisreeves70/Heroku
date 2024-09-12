@@ -6,16 +6,19 @@ echo "Debug: add_user.php script started.<br>";
 include 'db_connection.php';
 
 // Check if the database connection is successful
-if ($conn->connect_error) {
-    echo "Debug: Database connection failed: " . $conn->connect_error . "<br>";
+if ($conn === false) {
+    echo "Debug: Database connection failed: " . pg_last_error() . "<br>";
     die("Database connection failed.");
 } else {
     echo "Debug: Database connected successfully.<br>";
 }
 
-// Handle POST request
+// Debug: Check if POST data is set
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "Debug: POST request detected.<br>";
+    
+    // Debug: Print all POST data
+    echo "Debug: POST data: " . print_r($_POST, true) . "<br>";
 
     // Sanitize inputs
     $name = htmlspecialchars($_POST['name']);
@@ -27,8 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Prepare and bind
     $stmt = $conn->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
     if ($stmt === false) {
-        echo "Debug: Error preparing statement: " . $conn->error . "<br>";
-        die("Error preparing statement: " . $conn->error);
+        echo "Debug: Error preparing statement: " . pg_last_error() . "<br>";
+        die("Error preparing statement: " . pg_last_error());
     }
 
     $stmt->bind_param("ss", $name, $email);
@@ -39,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: view_users.php");
         exit();
     } else {
-        echo "Debug: Error executing statement: " . $stmt->error . "<br>";
+        echo "Debug: Error executing statement: " . pg_last_error() . "<br>";
     }
 
     $stmt->close();
