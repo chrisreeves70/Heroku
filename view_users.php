@@ -9,7 +9,7 @@ if (!$conn) {
     die("Connection failed: " . pg_last_error());
 }
 
-$sql = "SELECT * FROM Users";
+$sql = "SELECT * FROM users";
 $result = pg_query($conn, $sql);
 
 if (!$result) {
