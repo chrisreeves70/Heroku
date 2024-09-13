@@ -1,9 +1,0 @@
-{
-    "name": "chrisreeves70/heroku",
-    "description": "A brief description of your project",
-    "require": {
-        "php": ">=7.4",
-        "monolog/monolog-loggly": "^3.0"
-
-    }
-}
