@@ -1,5 +1,5 @@
 <?php
-require 'loggly_config.php'; // Include your Loggly configuration
+
 
 
 // Include database connection file
