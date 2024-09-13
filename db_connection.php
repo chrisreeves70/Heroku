@@ -9,7 +9,7 @@ use Monolog\Handler\LogglyHandler;
 
 // Define Loggly token and endpoint
 $logglyToken = '2c8f1f6e-b7d3-4682-9b36-8b90ab233298'; // Your Loggly token
-$logglyEndpoint = "https://logs-01.loggly.com/inputs/$logglyToken/tag/http/";
+$logglyEndpoint = "http://logs-01.loggly.com/inputs/9e1a9ba6-793d-4d1b-81d8-6cccf3511ba9/tag/http/";
 
 // Create a Logger instance
 $logger = new Logger('db_connection_logger');
