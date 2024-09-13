@@ -3,6 +3,7 @@
     "description": "A brief description of your project",
     "require": {
         "php": ">=7.4",
-        "monolog/monolog": "^3.0"
+        "monolog/monolog": "^2.0"
+
     }
 }
