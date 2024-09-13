@@ -1,5 +1,5 @@
 <?php
-require 'loggly_config.php'; // Include your Loggly configuration
+
 // Database connection settings
 $databaseUrl = "mysql://bf1b99b2168a1d:3cc7e973@us-cluster-east-01.k8s.cleardb.net/heroku_8e2d5898e64e59e?reconnect=true";
 
