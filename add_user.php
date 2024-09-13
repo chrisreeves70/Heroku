@@ -1,5 +1,7 @@
 <?php
 
+require 'loggly_config.php'; // Include Loggly configuration
+
 // Database connection settings
 $databaseUrl = "mysql://bf1b99b2168a1d:3cc7e973@us-cluster-east-01.k8s.cleardb.net/heroku_8e2d5898e64e59e?reconnect=true";
 
@@ -18,6 +20,7 @@ $conn = new mysqli($host, $user, $password, $dbname, $port);
 
 // Check connection
 if ($conn->connect_error) {
+    $logger->error("Error connecting to MySQL: " . $conn->connect_error);
     die("Error connecting to MySQL: " . $conn->connect_error);
 }
 
@@ -29,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Prepare and bind
     $stmt = $conn->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
     if ($stmt === false) {
+        $logger->error("Error preparing statement: " . $conn->error);
         die("Error preparing statement: " . $conn->error);
     }
 
@@ -36,8 +40,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the statement
     if ($stmt->execute()) {
+        $logger->info("User added successfully: $name, $email");
         echo "User added successfully";
     } else {
+        $logger->error("Error executing statement: " . $stmt->error);
         die("Error executing statement: " . $stmt->error);
     }
 
@@ -53,4 +59,3 @@ $conn->close();
     Email: <input type="email" name="email" required>
     <input type="submit" value="Add User">
 </form>
-
