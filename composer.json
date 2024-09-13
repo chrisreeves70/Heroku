@@ -3,7 +3,8 @@
     "description": "A brief description of your project",
     "type": "project",
     "require": {
-        "monolog/monolog": "^3.0"
+        "monolog/monolog": "^3.0",
+        "monolog/monolog-loggly": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -20,4 +21,3 @@
     },
     "license": "proprietary"
 }
-
