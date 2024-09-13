@@ -3,6 +3,8 @@
     "description": "A brief description of your project",
     "require": {
         "php": ">=7.4",
-        "laravel/framework": "^8.0"
+        "laravel/framework": "^8.0",
+        "monolog/monolog": "^2.0",
+        "monolog/monolog-loggly": "^1.0"
     }
 }
