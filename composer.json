@@ -1,8 +1,10 @@
 {
     "name": "chrisreeves70/heroku",
+    "description": "A simple PHP application",
     "description": "A brief description of your project",
     "require": {
+        "php": "^7.4 || ^8.0"
         "php": ">=7.4",
-        "monolog/monolog": "^3.0" // Add the Monolog package
+        "laravel/framework": "^8.0"
     }
 }
