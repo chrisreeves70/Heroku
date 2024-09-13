@@ -2,9 +2,8 @@
     "name": "your/project-name",
     "description": "A brief description of your project",
     "type": "project",
-    "require": {
-        "monolog/monolog": "^3.0",
-        "monolog/monolog-loggly": "^1.0"
+     "require": {
+        "monolog/monolog": "^3.7"
     },
     "autoload": {
         "psr-4": {
