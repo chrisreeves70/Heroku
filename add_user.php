@@ -1,5 +1,5 @@
 <?php
-
+require 'vendor/autoload.php'; // Include Composer's autoload file
 require 'loggly_config.php'; // Include Loggly configuration
 
 // Database connection settings
@@ -20,7 +20,7 @@ $conn = new mysqli($host, $user, $password, $dbname, $port);
 
 // Check connection
 if ($conn->connect_error) {
-    $logger->error("Error connecting to MySQL: " . $conn->connect_error);
+    $log->error("Error connecting to MySQL: " . $conn->connect_error);
     die("Error connecting to MySQL: " . $conn->connect_error);
 }
 
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Prepare and bind
     $stmt = $conn->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
     if ($stmt === false) {
-        $logger->error("Error preparing statement: " . $conn->error);
+        $log->error("Error preparing statement: " . $conn->error);
         die("Error preparing statement: " . $conn->error);
     }
 
@@ -40,10 +40,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the statement
     if ($stmt->execute()) {
-        $logger->info("User added successfully: $name, $email");
+        $log->info("User added successfully: $name, $email");
         echo "User added successfully";
     } else {
-        $logger->error("Error executing statement: " . $stmt->error);
+        $log->error("Error executing statement: " . $stmt->error);
         die("Error executing statement: " . $stmt->error);
     }
 
@@ -54,8 +54,24 @@ $conn->close();
 ?>
 
 <!-- HTML form -->
-<form method="post" action="">
-    Name: <input type="text" name="name" required>
-    Email: <input type="email" name="email" required>
-    <input type="submit" value="Add User">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Add User</h1>
+        <form method="post" action="">
+            Name: <input type="text" name="name" required>
+            Email: <input type="email" name="email" required>
+            <input type="submit" value="Add User">
+        </form>
+        <a href="index.php" class="btn btn-secondary mt-3">Back to Home</a>
+    </div>
+</body>
+</html>
+
