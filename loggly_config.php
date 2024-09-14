@@ -1,14 +1,13 @@
 <?php
 use Monolog\Logger;
-use Monolog\Handler\SocketHandler;
+use Monolog\Handler\LogglyHandler;
 
-require 'vendor/autoload.php';
+// Initialize logger
+$log = new Logger('loggly');
 
-// Create a new logger instance
-$logger = new Logger('my_logger');
+// Use your API Token and set the log level (e.g., INFO)
+$log->pushHandler(new LogglyHandler('2c8f1f6e-b7d3-4682-9b36-8b90ab233298', Logger::INFO));
 
-// Add a Loggly handler
-$logger->pushHandler(new SocketHandler('http://logs-01.loggly.com/inputs/2c8f1f6e-b7d3-4682-9b36-8b90ab233298/tag/http/', Logger::DEBUG));
+// Example of logging a message
+$log->info('Log message to Loggly');
 
-// Optionally, you can log a test message
-$logger->info('Logger initialized.');
